@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="128dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -19,7 +18,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:subtitleTextColor="@android:color/darker_gray"
         app:title="Doc-U"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextColor="@android:color/black"
+        app:titleTextAppearance="@style/toolbarStyle"
+        />
 
     <TextView
         android:id="@+id/recordedTextView"
@@ -37,23 +38,23 @@
 
     <ImageButton
         android:id="@+id/speakImageButton"
-        android:layout_width="83dp"
-        android:layout_height="69dp"
+        android:layout_width="242dp"
+        android:layout_height="221dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="?selectableItemBackground"
-        android:src="@android:drawable/ic_btn_speak_now"
+        android:contentDescription="@string/press_to_talk"
+        android:src="@drawable/ic_record"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/press_to_talk" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <ImageButton
         android:id="@+id/bluetoothConnectButton"
-        android:layout_width="83dp"
-        android:layout_height="69dp"
+        android:layout_width="130dp"
+        android:layout_height="127dp"
         android:background="?selectableItemBackground"
-        android:contentDescription="Connect to Bluetooth"
+        android:contentDescription="@string/connect_to_bluetooth"
         android:src="@drawable/ic_bluetooth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

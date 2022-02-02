@@ -2,4 +2,5 @@
     <string name="app_name">DocU</string>
     <string name="refresh_bt_devices">Refresh</string>
     <string name="press_to_talk">Press_To_Talk</string>
+    <string name="connect_to_bluetooth">Connect to Bluetooth</string>
 </resources>

@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.util.Log
-import java.util.Locale;
 import android.widget.ImageButton
 import android.widget.TextView
 import java.lang.Exception
-
 
 class MainActivity : AppCompatActivity(){
 

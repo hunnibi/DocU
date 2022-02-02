@@ -15,4 +15,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="toolbarStyle" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">64dp</item>
+    </style>
 </resources>
