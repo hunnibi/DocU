@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DocU</string>
+    <string name="refresh_bt_devices">Refresh</string>
+    <string name="press_to_talk">Press_To_Talk</string>
 </resources>
