@@ -1,14 +1,9 @@
 package com.mainpckg.docu
 
-class DeviceModel {
-    var deviceName: String? = null
+class DeviceModel(deviceName: String?, deviceHardwareAddress: String?) {
+    var deviceName: String? = deviceName
         private set
-    var deviceHardwareAddress: String? = null
+    var deviceHardwareAddress: String? = deviceHardwareAddress
         private set
 
-    constructor()
-    constructor(deviceName: String?, deviceHardwareAddress: String?) {
-        this.deviceName = deviceName
-        this.deviceHardwareAddress = deviceHardwareAddress
-    }
 }

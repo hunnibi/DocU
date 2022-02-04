@@ -11,7 +11,6 @@ import android.widget.TextView
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity(){
-
     private val requestCodeSpeechInput = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +21,7 @@ class MainActivity : AppCompatActivity(){
         speechButton.setOnClickListener { speak() }
     }
 
+    // Actual implementation of the recording of sound @Todo move to own class
     private fun speak(){
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(){
             Log.e("VOICE RECORDING", e.message.toString())
         }
     }
-
+    //TODO Should not use startActivity / onActivityResults
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
@@ -49,4 +49,5 @@ class MainActivity : AppCompatActivity(){
             }
         }
     }
+    //TODO Actual Threading et al for the Bluetooth-Connector. HOPE this works for usb connection too
 }

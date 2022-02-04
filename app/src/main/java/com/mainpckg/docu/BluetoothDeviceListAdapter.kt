@@ -38,7 +38,8 @@ class BluetoothDeviceListAdapter(private val context: Context, private val devic
             // Send device details to the MainActivity
             intent.putExtra("deviceName", deviceInfoModel.deviceName)
             intent.putExtra("deviceAddress", deviceInfoModel.deviceHardwareAddress)
-            // Call MainActivity
+
+            // Call MainActivity -> @Todo Refactoring
             context.startActivity(intent)
         }
     }
