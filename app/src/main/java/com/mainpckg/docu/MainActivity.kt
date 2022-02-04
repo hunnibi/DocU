@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(){
         val speechButton = findViewById<ImageButton>(R.id.speakImageButton)
         speechButton.setOnClickListener { speak() }
     }
+
     private fun speak(){
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -47,5 +48,5 @@ class MainActivity : AppCompatActivity(){
                 }
             }
         }
-        }
+    }
 }
