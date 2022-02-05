@@ -21,7 +21,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Exception
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
     private val requestCodeSpeechInput = 100
     private var deviceName: String? = null
     private var deviceAddress: String? = null
@@ -33,8 +33,10 @@ class MainActivity : AppCompatActivity(){
         speechButton.setOnClickListener { speak() }
 
         val bluetoothButton = findViewById<ImageButton>(R.id.bluetoothConnectButton)
-        bluetoothButton.setOnClickListener { val intent = Intent(this@MainActivity, SelectBluetoothActivity::class.java)
-        startActivity(intent)}
+        bluetoothButton.setOnClickListener {
+            val intent = Intent(this@MainActivity, SelectBluetoothActivity::class.java)
+            startActivity(intent)
+        }
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = intent.getStringExtra("deviceName")
@@ -45,30 +47,34 @@ class MainActivity : AppCompatActivity(){
             val bluetoothManager =
                 applicationContext.getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
             val bluetoothAdapter = bluetoothManager.adapter
-            createConnectThread =  CreateConnectThread(bluetoothAdapter, deviceAddress)
+            createConnectThread = CreateConnectThread(bluetoothAdapter, deviceAddress)
             createConnectThread!!.start()
         }
     }
 
-    // Actual implementation of the recording of sound @Todo move to own class
-    private fun speak(){
+    /* ================= VOICE INPUT ========================*/
+    // @Todo move to own class
+    private fun speak() {
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        mIntent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "de")
         mIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Recording:")
-        
+
         try {
             //if no error -> Display Text
             startActivityForResult(mIntent, requestCodeSpeechInput)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("VOICE RECORDING", e.message.toString())
         }
     }
+
     //TODO Should not use startActivity / onActivityResults
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
+        when (requestCode) {
             requestCodeSpeechInput -> {
                 if (resultCode == Activity.RESULT_OK && null != data) {
                     val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
@@ -78,9 +84,10 @@ class MainActivity : AppCompatActivity(){
             }
         }
     }
-    //TODO Actual Threading et al for the Bluetooth-Connector. HOPE this works for usb connection too
-    /* ============================ Thread to Create Bluetooth Connection =================================== */
-    inner class CreateConnectThread(bluetoothAdapter: BluetoothAdapter, address: String?) : Thread() {
+
+    /* ============================ THREADING  =================================== */
+    inner class CreateConnectThread(bluetoothAdapter: BluetoothAdapter, address: String?) :
+        Thread() {
         override fun run() {
             try {
                 // Connect to the remote device through the socket. This call blocks
@@ -89,17 +96,20 @@ class MainActivity : AppCompatActivity(){
                         this@MainActivity,
                         Manifest.permission.BLUETOOTH_CONNECT
                     ) != PackageManager.PERMISSION_GRANTED
-                ) {Log.e("Permissions", "Bluetooth Permissions not granted"
-                )}
+                ) {
+                    Log.e(
+                        "Permissions", "Bluetooth Permissions not granted"
+                    )
+                }
                 mmSocket.connect()
                 Log.e("Status", "Device connected")
-                handler?.obtainMessage(CONNECTING_STATUS,1,-1)?.sendToTarget()
+                handler?.obtainMessage(CONNECTING_STATUS, 1, -1)?.sendToTarget()
             } catch (connectException: IOException) {
                 // Unable to connect; close the socket and return.
                 try {
                     mmSocket.close()
                     Log.e("Status", "Cannot connect to device")
-                    handler?.obtainMessage(CONNECTING_STATUS,-1,-1)?.sendToTarget()
+                    handler?.obtainMessage(CONNECTING_STATUS, -1, -1)?.sendToTarget()
                 } catch (closeException: IOException) {
                     Log.e(ContentValues.TAG, "Could not close the client socket", closeException)
                 }
@@ -148,6 +158,7 @@ class MainActivity : AppCompatActivity(){
     class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmInStream: InputStream?
         private val mmOutStream: OutputStream?
+
         override fun run() {
             val buffer = ByteArray(1024) // buffer store for the stream
             var bytes = 0 // bytes returned from read()
@@ -180,7 +191,7 @@ class MainActivity : AppCompatActivity(){
 
         /* Call this from the main activity to send data to the remote device */
         fun write(input: String) {
-            val bytes = input.toByteArray() //converts entered String into bytes
+            val bytes = input.toByteArray()
             try {
                 mmOutStream!!.write(bytes)
             } catch (e: IOException) {
@@ -211,7 +222,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    /* ============================ Terminate Connection at BackPress ====================== */
+    /* On Backpress, terminate connection */
     override fun onBackPressed() {
         // Terminate Bluetooth Connection and close app
         createConnectThread!!.cancel()
@@ -221,6 +232,7 @@ class MainActivity : AppCompatActivity(){
         startActivity(a)
     }
 
+    /* Companion Object for the Threads*/
     companion object {
         var handler: Handler? = null
         lateinit var mmSocket: BluetoothSocket
