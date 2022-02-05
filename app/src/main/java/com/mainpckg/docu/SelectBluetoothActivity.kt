@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -24,15 +25,14 @@ class SelectBluetoothActivity : AppCompatActivity() {
         val bluetoothAdapter = bluetoothManager.adapter
 
         // Find all paired devices on the device @TODO Add Discovery (not for prototype)
-        var pairedDevices = mutableSetOf<BluetoothDevice>()
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            pairedDevices = bluetoothAdapter.bondedDevices
+            Log.e("Permissions", "Bluetooth Permissions not granted")
         }
-
+        var  pairedDevices = bluetoothAdapter.bondedDevices
         val deviceList: MutableList<Any> = ArrayList()
         if (pairedDevices.size > 0) {
             // There are paired devices. Get the name and address of each paired device.

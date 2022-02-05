@@ -33,7 +33,7 @@ class BluetoothDeviceListAdapter(private val context: Context, private val devic
         itemHolder.linearLayout.setOnClickListener {
             val intent = Intent(
                 context,
-                MainActivity
+                MainActivity::class.java
             )
             // Send device details to the MainActivity
             intent.putExtra("deviceName", deviceInfoModel.deviceName)
