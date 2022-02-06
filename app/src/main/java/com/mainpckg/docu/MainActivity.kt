@@ -6,36 +6,41 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import android.util.Log
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
+import android.speech.RecognizerIntent
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
-    private val requestCodeSpeechInput = 100
     private var deviceName: String? = null
     private var deviceAddress: String? = null
+    private val requestCodeSpeechInput = 100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val speechButton = findViewById<ImageButton>(R.id.speakImageButton)
-        speechButton.setOnClickListener { speak() }
 
+        val speechButton = findViewById<ImageButton>(R.id.speakImageButton)
+        speechButton.setOnClickListener {
+            speak() }
+
+        val permissisionsList = arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_SCAN)
         val bluetoothButton = findViewById<ImageButton>(R.id.bluetoothConnectButton)
         bluetoothButton.setOnClickListener {
-            val intent = Intent(this@MainActivity, SelectBluetoothActivity::class.java)
-            startActivity(intent)
+            val bluetoothIntent = Intent(this@MainActivity, SelectBluetoothActivity::class.java)
+            startActivity(bluetoothIntent)
         }
 
         // If a bluetooth device has been selected from SelectDeviceActivity
@@ -52,20 +57,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
     /* ================= VOICE INPUT ========================*/
     // @Todo move to own class
     private fun speak() {
-        val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        mIntent.putExtra(
+        val voiceInputIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        voiceInputIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
-        mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "de")
-        mIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Recording:")
+        voiceInputIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "de")
 
         try {
             //if no error -> Display Text
-            startActivityForResult(mIntent, requestCodeSpeechInput)
+            startActivityForResult(voiceInputIntent, requestCodeSpeechInput)
         } catch (e: Exception) {
             Log.e("VOICE RECORDING", e.message.toString())
         }
@@ -79,15 +85,18 @@ class MainActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK && null != data) {
                     val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                     val displayText = findViewById<TextView>(R.id.recordedTextView)
+                    Log.e("NEW", "NEW DIARY ENTRY STARTED!")
                     displayText.text = result!![0]
                 }
             }
         }
     }
 
+    //@ TODO Move to own class!
     /* ============================ THREADING  =================================== */
     inner class CreateConnectThread(bluetoothAdapter: BluetoothAdapter, address: String?) :
         Thread() {
+        @RequiresApi(Build.VERSION_CODES.S)
         override fun run() {
             try {
                 // Connect to the remote device through the socket. This call blocks
@@ -97,6 +106,9 @@ class MainActivity : AppCompatActivity() {
                         Manifest.permission.BLUETOOTH_CONNECT
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
+                    ActivityCompat.requestPermissions(this@MainActivity,
+                        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_ADMIN), 101
+                    )
                     Log.e(
                         "Permissions", "Bluetooth Permissions not granted"
                     )
@@ -126,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                 connectedThread?.cancel()
                 mmSocket.close()
             } catch (e: IOException) {
-                Log.e(ContentValues.TAG, "Could not close the client socket", e)
+                Log.e(ContentValues.TAG, "Could not close the client socket or related Thread", e)
             }
         }
 
@@ -213,8 +225,8 @@ class MainActivity : AppCompatActivity() {
 
             // Get the input and output streams, using temp objects
             try {
-                tmpIn = mmSocket.inputStream
-                tmpOut = mmSocket.outputStream
+                tmpIn = Threading.mmSocket.inputStream
+                tmpOut = Threading.mmSocket.outputStream
             } catch (e: IOException) {
             }
             mmInStream = tmpIn
@@ -233,7 +245,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* Companion Object for the Threads*/
-    companion object {
+    companion object Threading {
         var handler: Handler? = null
         lateinit var mmSocket: BluetoothSocket
         var connectedThread: ConnectedThread? = null
