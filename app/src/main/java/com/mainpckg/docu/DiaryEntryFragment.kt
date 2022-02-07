@@ -1,18 +1,12 @@
 package com.mainpckg.docu
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.speech.RecognizerIntent
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 
 class DiaryEntryFragment : Fragment() {
-    private val requestCodeSpeechInput = 100
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

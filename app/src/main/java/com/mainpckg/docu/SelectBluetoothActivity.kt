@@ -1,7 +1,6 @@
 package com.mainpckg.docu
 
 import android.Manifest
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -32,7 +31,7 @@ class SelectBluetoothActivity : AppCompatActivity() {
         ) {
             Log.e("Permissions", "Bluetooth Permissions not granted")
         }
-        var  pairedDevices = bluetoothAdapter.bondedDevices
+        val pairedDevices = bluetoothAdapter.bondedDevices
         val deviceList: MutableList<Any> = ArrayList()
         if (pairedDevices.size > 0) {
             // There are paired devices. Get the name and address of each paired device.
