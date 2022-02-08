@@ -26,7 +26,7 @@ class SelectBluetoothActivity : AppCompatActivity() {
         // Find all paired devices on the device @TODO Add Discovery (not for prototype)
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.BLUETOOTH_CONNECT
+                Manifest.permission.BLUETOOTH_ADMIN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.e("Permissions", "Bluetooth Permissions not granted")

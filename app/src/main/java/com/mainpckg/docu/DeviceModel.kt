@@ -5,5 +5,4 @@ class DeviceModel(deviceName: String?, deviceHardwareAddress: String?) {
         private set
     var deviceHardwareAddress: String? = deviceHardwareAddress
         private set
-
 }

@@ -1,8 +1,8 @@
 package com.mainpckg.docu
 
 import android.bluetooth.BluetoothSocket
+import android.os.Handler
 import android.util.Log
-import com.mainpckg.docu.MainActivity.Threading.handler
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -11,6 +11,8 @@ class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
     private val mmInStream: InputStream?
     private val mmOutStream: OutputStream?
     private  val MESSAGE_READ = 2
+    lateinit var handler: Handler       // TODO We still need our custom handler, so this doesn't make sense. - Handler should be either part of CreateInitialThread or its own class
+
     override fun run() {
         val buffer = ByteArray(1024) // buffer store for the stream
         var bytes = 0 // bytes returned from read()
@@ -26,10 +28,10 @@ class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
                 if (buffer[bytes].toInt().toChar() == '\n') {
                     readMessage = String(buffer, 0, bytes)
                     Log.e("Arduino Message", readMessage)
-                    handler?.obtainMessage(
+                    handler.obtainMessage(
                         MESSAGE_READ,
                         readMessage
-                    )?.sendToTarget()
+                    ).sendToTarget()
                     bytes = 0
                 } else {
                     bytes++
@@ -65,8 +67,8 @@ class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
 
         // Get the input and output streams, using temp objects
         try {
-            tmpIn = MainActivity.mmSocket.inputStream
-            tmpOut = MainActivity.mmSocket.outputStream
+            tmpIn = mmSocket.inputStream
+            tmpOut = mmSocket.outputStream
         } catch (e: IOException) {
         }
         mmInStream = tmpIn
